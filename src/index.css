@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Dark mode = class "dark" on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Light theme (default values) */
+:root {
+  color-scheme: light;
+  --app: #f1f5f9;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --line: #e2e8f0;
+  --fg: #0f172a;
+  --muted: #475569;
+  --subtle: #64748b;
+  --accent: #15803d;
+}
+
+/* Dark theme */
+.dark {
+  color-scheme: dark;
+  --app: #0b1220;
+  --panel: #0d1526;
+  --card: #111827;
+  --line: #1f2937;
+  --fg: #f1f5f9;
+  --muted: #94a3b8;
+  --subtle: #64748b;
+  --accent: #22c55e;
+}
+
+/* Turns the variables into Tailwind classes: bg-app, text-fg, border-line ... */
+@theme inline {
+  --color-app: var(--app);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-brand: #16a34a;
+  --color-brand-light: #22c55e;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-app font-sans text-fg antialiased;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
