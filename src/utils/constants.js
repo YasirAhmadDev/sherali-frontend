@@ -51,3 +51,8 @@ export const MAX_PHOTOS = 5;
 // Map defaults (centre of Kabul)
 export const KABUL_CENTER = [34.5553, 69.2075];
 export const DEFAULT_MAP_ZOOM = 12;
+
+// Same limits as the backend uses to reject coordinates outside Kabul
+export const KABUL_BOUNDS = { minLat: 34.35, maxLat: 34.7, minLng: 68.95, maxLng: 69.45 };
+
+export const PAGE_SIZE = 15;
