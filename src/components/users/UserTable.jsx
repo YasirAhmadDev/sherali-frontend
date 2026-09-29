@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { KeyRound, Pencil, UserCheck, UserX } from "lucide-react";
 
 import Badge from "@/components/common/Badge";
 import Table, { tdClass, thClass } from "@/components/common/Table";
-import { ROLE_OPTIONS } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import { ROLE_VALUES } from "@/utils/constants";
 import { formatDateTime, labelFor } from "@/utils/formatters";
 
 const ROLE_COLORS = { admin: "red", officer: "blue", viewer: "gray" };
@@ -19,6 +21,9 @@ function StatusBadges({ user }) {
 
 // Phones: cards. Tablets and desktop: a table.
 export default function UserTable({ users, currentUser, onEdit, onResetPassword, onToggleActive }) {
+  const { t } = useTranslation();
+  const roleOptions = useOptions(ROLE_VALUES, "roles");
+
   const actions = (u) => {
     const isSelf = u._id === currentUser._id;
     return (
@@ -44,7 +49,7 @@ export default function UserTable({ users, currentUser, onEdit, onResetPassword,
 
   const roleBadge = (u) => (
     <Badge color={ROLE_COLORS[u.role]} className="capitalize">
-      {labelFor(ROLE_OPTIONS, u.role)}
+      {labelFor(roleOptions, u.role)}
     </Badge>
   );
 
@@ -79,7 +84,7 @@ export default function UserTable({ users, currentUser, onEdit, onResetPassword,
           <tr>
             <th className={thClass}>User</th>
             <th className={thClass}>Role</th>
-            <th className={thClass}>District</th>
+            <th className={thClass}>{t("table.district")}</th>
             <th className={`${thClass} hidden xl:table-cell`}>Badge</th>
             <th className={`${thClass} hidden lg:table-cell`}>Last login</th>
             <th className={thClass}>Status</th>

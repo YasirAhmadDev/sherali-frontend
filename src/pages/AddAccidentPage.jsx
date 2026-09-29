@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { createAccident, uploadPhotos } from "@/api/accidents.api";
@@ -13,6 +14,7 @@ import PageHeader from "@/components/common/PageHeader";
 
 export default function AddAccidentPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { data: locations, loading, error } = useFetch(() => getLocations({ isActive: "true" }), []);
 
   const handleSubmit = async (payload, { newFiles }) => {
@@ -35,7 +37,7 @@ export default function AddAccidentPage() {
 
   return (
     <>
-      <PageHeader title="Add New Accident" subtitle="Fill in the details of the accident" />
+      <PageHeader title={t("dashboard.addNewAccident")} subtitle="Fill in the details of the accident" />
 
       {loading && <Loader />}
       {error && <Alert>{error}</Alert>}

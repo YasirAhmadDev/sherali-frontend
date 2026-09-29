@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MapPin, Plus, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -23,6 +24,7 @@ import LocationTable from "@/components/locations/LocationTable";
 
 export default function LocationsPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const isAdmin = user?.role === ROLES.ADMIN;
 
   const [search, setSearch] = useState("");
@@ -86,7 +88,7 @@ export default function LocationsPage() {
   return (
     <>
       <PageHeader
-        title="Locations"
+        title={t("nav.locations")}
         subtitle="Known places where accidents are recorded. Officers pick from this list."
         action={
           isAdmin && (

@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from "react-leaflet";
 
-import { ACCIDENT_TYPES, DEFAULT_MAP_ZOOM, KABUL_CENTER } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import { ACCIDENT_TYPE_VALUES, DEFAULT_MAP_ZOOM, KABUL_CENTER } from "@/utils/constants";
 import { formatDateTime, labelFor } from "@/utils/formatters";
 
 export const SEVERITY_COLORS = { low: "#22c55e", medium: "#eab308", high: "#ef4444" };
@@ -25,6 +27,9 @@ function FitBounds({ points }) {
 
 // points = [{ _id, date, district, roadName, coordinates: { lat, lng }, type, injured, deaths, severity }]
 export default function AccidentMap({ points = [], className = "h-[65vh] min-h-80" }) {
+  const { t } = useTranslation();
+  const accidentTypes = useOptions(ACCIDENT_TYPE_VALUES, "accidentTypes");
+
   return (
     <MapContainer center={KABUL_CENTER} zoom={DEFAULT_MAP_ZOOM} scrollWheelZoom className={`w-full ${className}`}>
       <TileLayer
@@ -51,10 +56,10 @@ export default function AccidentMap({ points = [], className = "h-[65vh] min-h-8
               <p className="font-semibold">{p.roadName || p.district}</p>
               <p className="text-xs text-slate-500">{formatDateTime(p.date)}</p>
               <p>
-                {labelFor(ACCIDENT_TYPES, p.type)} · {p.district}
+                {labelFor(accidentTypes, p.type)} · {p.district}
               </p>
               <p>
-                Injured <b>{p.injured}</b> · Deaths <b>{p.deaths}</b>
+                {t("table.injured")} <b>{p.injured}</b> · {t("table.deaths")} <b>{p.deaths}</b>
               </p>
               <Link to={`/accidents/${p._id}`} className="font-medium text-green-700 underline">
                 View details

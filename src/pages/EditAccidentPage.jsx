@@ -1,4 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { deletePhoto, getAccident, updateAccident, uploadPhotos } from "@/api/accidents.api";
@@ -17,6 +18,7 @@ export default function EditAccidentPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const { data: accident, loading, error, updatedAt, reload } = useFetch(() => getAccident(id), [id]);
   const { data: activeLocations } = useFetch(() => getLocations({ isActive: "true" }), []);
@@ -65,7 +67,7 @@ export default function EditAccidentPage() {
         key={updatedAt?.getTime()} // reloading the record gives the form a fresh start
         accident={accident}
         locations={locations}
-        submitLabel="Save changes"
+        submitLabel={t("common.save")}
         onSubmit={handleSubmit}
         onCancel={() => navigate(-1)}
       />

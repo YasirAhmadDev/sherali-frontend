@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Crosshair } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { getErrorMessage } from "@/api/axios";
@@ -10,7 +10,12 @@ import Alert from "@/components/common/Alert";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import FormField, { inputClass } from "@/components/common/FormField";
-import { ACCIDENT_CAUSES, ACCIDENT_TYPES, DISTRICT_OPTIONS, KABUL_BOUNDS } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import {
+  ACCIDENT_CAUSE_VALUES,
+  ACCIDENT_TYPE_VALUES,
+  DISTRICT_OPTIONS,
+} from "@/utils/constants";
 import { fromKabulInputValue, nowKabulInputValue, toKabulInputValue } from "@/utils/formatters";
 
 const emptyForm = () => ({
@@ -18,8 +23,6 @@ const emptyForm = () => ({
   district: "",
   location: "",
   roadName: "",
-  lat: "",
-  lng: "",
   type: "",
   cause: "",
   vehicles: [],
@@ -34,8 +37,6 @@ const fromAccident = (a) => ({
   district: a.district || "",
   location: a.location?._id || "",
   roadName: a.roadName || "",
-  lat: a.coordinates?.lat != null ? String(a.coordinates.lat) : "",
-  lng: a.coordinates?.lng != null ? String(a.coordinates.lng) : "",
   type: a.type || "",
   cause: a.cause || "",
   vehicles: (a.vehicles || []).map((v) => ({ type: v.type, plate: v.plate || "" })),
@@ -56,11 +57,20 @@ const previewSeverity = (injured, deaths) => {
 //   locations  -> list from GET /locations
 //   onSubmit(payload, { newFiles, removedPhotos })  -> must return a promise
 //   onCancel
-export default function AccidentForm({ accident, locations = [], onSubmit, onCancel, submitLabel = "Save accident" }) {
+export default function AccidentForm({
+  accident,
+  locations = [],
+  onSubmit,
+  onCancel,
+  submitLabel,
+}) {
+  const { t } = useTranslation();
+  const accidentTypes = useOptions(ACCIDENT_TYPE_VALUES, "accidentTypes");
+  const accidentCauses = useOptions(ACCIDENT_CAUSE_VALUES, "accidentCauses");
   const isEdit = Boolean(accident);
+  const resolvedSubmitLabel = submitLabel || t("common.save");
 
   const [form, setForm] = useState(() => (accident ? fromAccident(accident) : emptyForm()));
-  const [coordsTouched, setCoordsTouched] = useState(false);
   const [existingPhotos, setExistingPhotos] = useState(accident?.photos ?? []);
   const [removedPhotos, setRemovedPhotos] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
@@ -68,7 +78,6 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
-  const [locating, setLocating] = useState(false);
 
   const setField = (name, value) => {
     setForm((f) => ({ ...f, [name]: value }));
@@ -76,7 +85,8 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
   };
   const handleChange = (e) => setField(e.target.name, e.target.value);
 
-  // Picking a location fills the district and the coordinates automatically
+  // Picking a location fills the district automatically. Coordinates are
+  // filled in on the server from the location, so the form does not need them.
   const handleLocationChange = (e) => {
     const id = e.target.value;
     const loc = locations.find((l) => l._id === id);
@@ -84,38 +94,8 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
       ...f,
       location: id,
       ...(loc && { district: loc.district }),
-      ...(loc && !coordsTouched && { lat: String(loc.lat), lng: String(loc.lng) }),
     }));
     setErrors((prev) => ({ ...prev, location: undefined, place: undefined, district: undefined }));
-  };
-
-  const handleCoordsChange = (e) => {
-    setCoordsTouched(true);
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-    setErrors((prev) => ({ ...prev, coordinates: undefined, place: undefined }));
-  };
-
-  // Uses the phone's GPS (works on https:// or localhost only)
-  const useMyLocation = () => {
-    if (!navigator.geolocation) return toast.error("GPS is not supported on this device");
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setForm((f) => ({
-          ...f,
-          lat: pos.coords.latitude.toFixed(6),
-          lng: pos.coords.longitude.toFixed(6),
-        }));
-        setCoordsTouched(true);
-        setErrors((prev) => ({ ...prev, coordinates: undefined, place: undefined }));
-        setLocating(false);
-      },
-      () => {
-        toast.error("Could not get your location. Check the browser permission.");
-        setLocating(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
   };
 
   const validate = () => {
@@ -129,20 +109,8 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
     if (!form.type) e.type = "Select the accident type";
     if (!form.cause) e.cause = "Select the cause";
 
-    const hasLat = form.lat !== "";
-    const hasLng = form.lng !== "";
-    if (hasLat !== hasLng) {
-      e.coordinates = "Enter both latitude and longitude";
-    } else if (hasLat) {
-      const lat = Number(form.lat);
-      const lng = Number(form.lng);
-      const { minLat, maxLat, minLng, maxLng } = KABUL_BOUNDS;
-      if (Number.isNaN(lat) || Number.isNaN(lng) || lat < minLat || lat > maxLat || lng < minLng || lng > maxLng) {
-        e.coordinates = "Coordinates must be inside Kabul";
-      }
-    }
-    if (!form.location && !hasLat && !form.roadName.trim()) {
-      e.place = "Choose a location, enter coordinates, or type the road name";
+    if (!form.location && !form.roadName.trim()) {
+      e.place = "Choose a location, or type the road name";
     }
 
     for (const field of ["injured", "deaths"]) {
@@ -168,9 +136,6 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
       }),
     };
     if (form.location) payload.location = form.location;
-    if (form.lat !== "" && form.lng !== "") {
-      payload.coordinates = { lat: Number(form.lat), lng: Number(form.lng) };
-    }
     // When editing, always send these two so the officer can clear them
     if (isEdit || form.roadName.trim()) payload.roadName = form.roadName.trim();
     if (isEdit || form.notes.trim()) payload.notes = form.notes.trim();
@@ -220,7 +185,7 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
             />
           </FormField>
 
-          <FormField label="District" htmlFor="district" required error={errors.district}>
+          <FormField label={t("table.district")} htmlFor="district" required error={errors.district}>
             <select id="district" name="district" value={form.district} onChange={handleChange} className={inputClass}>
               <option value="">Select district</option>
               {DISTRICT_OPTIONS.map((d) => (
@@ -231,7 +196,7 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
             </select>
           </FormField>
 
-          <FormField label="Location" htmlFor="location" hint="Known places, managed by the admin">
+          <FormField label={t("table.location")} htmlFor="location" hint="Known places, managed by the admin">
             <select id="location" name="location" value={form.location} onChange={handleLocationChange} className={inputClass}>
               {canLeaveLocationEmpty && <option value="">No listed location</option>}
               {locations.map((l) => (
@@ -253,67 +218,31 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
               className={inputClass}
             />
           </FormField>
-
-          <FormField label="Latitude" htmlFor="lat">
-            <input
-              id="lat"
-              name="lat"
-              type="number"
-              step="any"
-              inputMode="decimal"
-              value={form.lat}
-              onChange={handleCoordsChange}
-              placeholder="34.5553"
-              className={inputClass}
-            />
-          </FormField>
-
-          <FormField label="Longitude" htmlFor="lng">
-            <input
-              id="lng"
-              name="lng"
-              type="number"
-              step="any"
-              inputMode="decimal"
-              value={form.lng}
-              onChange={handleCoordsChange}
-              placeholder="69.2075"
-              className={inputClass}
-            />
-          </FormField>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <Button variant="secondary" size="sm" icon={Crosshair} loading={locating} onClick={useMyLocation}>
-            Use my current location
-          </Button>
-          <p className="text-xs text-subtle">If you pick a location above, its coordinates are filled in for you.</p>
-        </div>
-
-        {errors.coordinates && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{errors.coordinates}</p>}
         {errors.place && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{errors.place}</p>}
       </Card>
 
       {/* What happened */}
       <Card title="What happened">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <FormField label="Accident type" htmlFor="type" required error={errors.type}>
+          <FormField label={t("table.type")} htmlFor="type" required error={errors.type}>
             <select id="type" name="type" value={form.type} onChange={handleChange} className={inputClass}>
               <option value="">Select type</option>
-              {ACCIDENT_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
+              {accidentTypes.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>
           </FormField>
 
-          <FormField label="Main cause" htmlFor="cause" required error={errors.cause}>
+          <FormField label={t("table.cause")} htmlFor="cause" required error={errors.cause}>
             <select id="cause" name="cause" value={form.cause} onChange={handleChange} className={inputClass}>
               <option value="">Select cause</option>
-              {ACCIDENT_CAUSES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
+              {accidentCauses.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>
@@ -331,12 +260,12 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
         title="People affected"
         action={
           <div className="flex items-center gap-2 text-xs text-muted">
-            Severity <SeverityBadge severity={severity} />
+            {t("table.severity")} <SeverityBadge severity={severity} />
           </div>
         }
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <FormField label="Number injured" htmlFor="injured" error={errors.injured}>
+          <FormField label={t("table.injured")} htmlFor="injured" error={errors.injured}>
             <input
               id="injured"
               name="injured"
@@ -349,7 +278,7 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
             />
           </FormField>
 
-          <FormField label="Number of deaths" htmlFor="deaths" error={errors.deaths}>
+          <FormField label={t("table.deaths")} htmlFor="deaths" error={errors.deaths}>
             <input
               id="deaths"
               name="deaths"
@@ -398,10 +327,10 @@ export default function AccidentForm({ accident, locations = [], onSubmit, onCan
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <Button variant="secondary" size="lg" onClick={onCancel} disabled={saving}>
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button type="submit" size="lg" loading={saving}>
-          {submitLabel}
+          {resolvedSubmitLabel}
         </Button>
       </div>
     </form>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
 
 import Card from "@/components/common/Card";
@@ -14,8 +15,10 @@ const TONES = {
 //   "down"    -> fewer is better (accidents, injuries, deaths)
 //   "neutral" -> just informational (locations)
 function Change({ change, goodWhen }) {
+  const { t } = useTranslation();
+
   if (change === null || change === undefined) {
-    return <p className="mt-1 text-xs text-subtle">No comparison yet</p>;
+    return <p className="mt-1 text-xs text-subtle">{t("dashboard.noComparison")}</p>;
   }
 
   const isZero = change === 0;
@@ -32,7 +35,7 @@ function Change({ change, goodWhen }) {
         <Icon size={13} />
         {Math.abs(change)}%
       </p>
-      <p className="text-xs text-subtle">vs. last month</p>
+      <p className="text-xs text-subtle">{t("dashboard.vsLastMonth")}</p>
     </div>
   );
 }
@@ -41,7 +44,9 @@ export default function StatCard({ icon: Icon, label, value, change, tone = "gre
   return (
     <Card>
       <div className="flex items-center gap-4">
-        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full sm:h-14 sm:w-14 ${TONES[tone]}`}>
+        <div
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full sm:h-14 sm:w-14 ${TONES[tone]}`}
+        >
           <Icon size={24} />
         </div>
         <div className="min-w-0">

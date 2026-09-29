@@ -39,6 +39,10 @@ export const getKabulMonth = () =>
 export const labelFor = (options, value) =>
   options.find((option) => option.value === value)?.label ?? value ?? "-";
 
+// For places that only have the raw value (e.g. "collision") and a translation
+// namespace, without needing to build the whole options array first.
+export const translateValue = (t, namespace, value) => (value ? t(`${namespace}.${value}`) : "-");
+
 // <input type="datetime-local"> helpers (used by the accident form)
 export const toKabulInputValue = (date) =>
   date ? formatDateTime(date).replace(" ", "T") : "";

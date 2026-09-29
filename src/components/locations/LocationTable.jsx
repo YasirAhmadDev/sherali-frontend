@@ -1,13 +1,18 @@
+import { useTranslation } from "react-i18next";
 import { Ban, Pencil, RotateCcw } from "lucide-react";
 
 import Badge from "@/components/common/Badge";
 import Table, { tdClass, thClass } from "@/components/common/Table";
 
 const iconButton = "rounded-lg p-2 text-muted transition-colors hover:bg-line hover:text-fg";
-const coords = (l) => `${Number(l.lat).toFixed(4)}, ${Number(l.lng).toFixed(4)}`;
+
+const coords = (l) =>
+  l.lat != null && l.lng != null ? `${Number(l.lat).toFixed(4)}, ${Number(l.lng).toFixed(4)}` : "Not set";
 
 // Phones: cards. Tablets and desktop: a table. Action buttons show for admins only.
 export default function LocationTable({ locations, isAdmin, onEdit, onDeactivate, onActivate }) {
+  const { t } = useTranslation();
+
   const actions = (l) =>
     isAdmin && (
       <div className="flex items-center justify-end gap-1">
@@ -64,7 +69,7 @@ export default function LocationTable({ locations, isAdmin, onEdit, onDeactivate
         <thead className="border-b border-line">
           <tr>
             <th className={thClass}>Name</th>
-            <th className={thClass}>District</th>
+            <th className={thClass}>{t("table.district")}</th>
             <th className={thClass}>Coordinates</th>
             <th className={thClass}>Accidents</th>
             {isAdmin && <th className={thClass}>Status</th>}

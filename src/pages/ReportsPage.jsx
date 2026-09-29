@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Download } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -18,6 +19,7 @@ import ReportFilters, { EMPTY_REPORT_FILTERS } from "@/components/reports/Report
 import SummaryTable from "@/components/reports/SummaryTable";
 
 export default function ReportsPage() {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState(EMPTY_REPORT_FILTERS);
   const [downloading, setDownloading] = useState(false);
 
@@ -40,7 +42,7 @@ export default function ReportsPage() {
   return (
     <>
       <PageHeader
-        title="Reports"
+        title={t("nav.reports")}
         subtitle="Summary of accidents for a period. Download the full list as a CSV file (opens in Excel)."
         action={
           <Button icon={Download} loading={downloading} onClick={handleDownload}>

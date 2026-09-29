@@ -1,4 +1,5 @@
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useTranslation } from "react-i18next";
 
 import Card from "@/components/common/Card";
 import { inputClass } from "@/components/common/FormField";
@@ -7,6 +8,7 @@ import { useTheme } from "@/hooks/useTheme";
 // data = [{ month: "Jan", count: 17 }, ...]
 export default function MonthlyChart({ data = [], year, yearOptions = [], onYearChange }) {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
 
   // Recharts needs real colour values (not CSS classes)
   const grid = isDark ? "#1f2937" : "#e2e8f0";
@@ -16,7 +18,7 @@ export default function MonthlyChart({ data = [], year, yearOptions = [], onYear
 
   return (
     <Card
-      title="Accidents Per Month"
+      title={t("dashboard.accidentsPerMonth")}
       action={
         yearOptions.length > 0 && (
           <select

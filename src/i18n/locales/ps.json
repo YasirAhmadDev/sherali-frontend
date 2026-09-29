@@ -1,1 +1,102 @@
-{}
+{
+  "app": { "title": "د ترافیکي پېښو مدیریت", "subtitle": "کابل، افغانستان" },
+  "nav": {
+    "dashboard": "ډشبورډ",
+    "accidents": "پېښې",
+    "locations": "ځایونه",
+    "map": "نقشه",
+    "reports": "راپورونه",
+    "users": "کاروونکي",
+    "logout": "وتل"
+  },
+  "common": {
+    "save": "ساتل",
+    "cancel": "لغوه کول",
+    "edit": "سمول",
+    "delete": "ړنګول",
+    "add": "زیاتول",
+    "search": "لټون",
+    "loading": "بارېږي...",
+    "tryAgain": "بیا هڅه وکړئ",
+    "all": "ټول",
+    "notAllowed": "اجازه نلرئ",
+    "backToDashboard": "ډشبورډ ته بېرته ورشئ"
+  },
+  "login": {
+    "email": "بریښنالیک",
+    "password": "پټنوم",
+    "signIn": "ننوتل",
+    "accountsNote": "حسابونه د اډمین لخوا جوړېږي."
+  },
+  "changePassword": {
+    "title": "پټنوم بدلول",
+    "forced": "د امنیت له امله، مخکې له دې چې ادامه ورکړئ باید نوی پټنوم وټاکئ.",
+    "normal": "د خپل حساب لپاره نوی پټنوم وټاکئ.",
+    "current": "اوسنی پټنوم",
+    "new": "نوی پټنوم",
+    "confirm": "نوی پټنوم تکرار کړئ",
+    "hint": "لږ تر لږه ۸ توري",
+    "save": "نوی پټنوم وساتئ",
+    "logout": "له حساب څخه ووځئ"
+  },
+  "dashboard": {
+    "title": "ډشبورډ",
+    "subtitle": "په کابل کې د ترافیکي پېښو عمومي کتنه",
+    "lastUpdated": "وروستی اپډیټ",
+    "totalAccidents": "ټولې پېښې",
+    "injured": "ټپیان",
+    "fatalities": "مړینې",
+    "locations": "ځایونه",
+    "vsLastMonth": "د تېرې میاشتې پرتله",
+    "noComparison": "لا تر اوسه پرتله شتون نلري",
+    "accidentsPerMonth": "میاشتنۍ پېښې",
+    "recentAccidents": "وروستۍ پېښې",
+    "viewAll": "ټول وګورئ",
+    "noAccidents": "لا تر اوسه هېڅ پېښه نه ده ثبت شوې.",
+    "quickActions": "چټک اقدامات",
+    "addNewAccident": "نوې پېښه زیاته کړئ",
+    "viewAllAccidents": "ټولې پېښې وګورئ",
+    "manageLocations": "ځایونه اداره کړئ",
+    "viewLocations": "ځایونه وګورئ",
+    "generateReport": "راپور جوړ کړئ",
+    "kabul": "کابل",
+    "kabulTagline": "خوندي سړکونه، پیاوړي ټولنې"
+  },
+  "table": {
+    "dateTime": "نېټه او وخت",
+    "location": "ځای",
+    "district": "ناحیه",
+    "type": "ډول",
+    "cause": "لامل",
+    "injured": "ټپیان",
+    "deaths": "مړینې",
+    "fatalities": "مړینې",
+    "severity": "شدت"
+  },
+  "roles": { "admin": "اډمین", "officer": "افسر", "viewer": "کتونکی" },
+  "severity": { "low": "ټیټ", "medium": "منځنی", "high": "لوړ" },
+  "accidentTypes": {
+    "collision": "ټکر",
+    "pedestrian": "د پیاده ټکر",
+    "rollover": "بمبار کېدل",
+    "hit_and_run": "له صحنې تښتېدل",
+    "other": "نور"
+  },
+  "accidentCauses": {
+    "speeding": "ډېره چټکي",
+    "wrong_way": "غلط لوري ته حرکت",
+    "mechanical": "تخنیکي خرابي",
+    "distracted": "د موټروان بې پاملرنه",
+    "other": "نور"
+  },
+  "vehicleTypes": {
+    "car": "موټر",
+    "motorcycle": "موټرسایکل",
+    "rickshaw": "ریکشا",
+    "bus": "بس",
+    "truck": "لاري",
+    "van": "ون",
+    "bicycle": "بایسکل",
+    "other": "نور"
+  }
+}

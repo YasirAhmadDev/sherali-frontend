@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Search, Users } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -7,7 +8,8 @@ import { createUser, getUsers, resetUserPassword, updateUser } from "@/api/users
 import { useAuth } from "@/hooks/useAuth";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useFetch } from "@/hooks/useFetch";
-import { PAGE_SIZE, ROLE_OPTIONS } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import { PAGE_SIZE, ROLE_VALUES } from "@/utils/constants";
 import { cleanParams } from "@/utils/params";
 
 import Alert from "@/components/common/Alert";
@@ -26,6 +28,8 @@ import UserTable from "@/components/users/UserTable";
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
+  const { t } = useTranslation();
+  const roleOptions = useOptions(ROLE_VALUES, "roles");
 
   const [filters, setFilters] = useState({ search: "", role: "", status: "" });
   const [page, setPage] = useState(1);
@@ -93,7 +97,7 @@ export default function UsersPage() {
   return (
     <>
       <PageHeader
-        title="Users"
+        title={t("nav.users")}
         subtitle="Create accounts and choose each person's role"
         action={
           <Button icon={Plus} onClick={() => setFormModal({})}>
@@ -122,7 +126,7 @@ export default function UsersPage() {
             aria-label="Filter by role"
           >
             <option value="">All roles</option>
-            {ROLE_OPTIONS.map((r) => (
+            {roleOptions.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
               </option>

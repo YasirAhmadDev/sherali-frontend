@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Pencil, Trash2 } from "lucide-react";
 
 import SeverityBadge from "@/components/accidents/SeverityBadge";
 import Table, { tdClass, thClass } from "@/components/common/Table";
-import { ACCIDENT_CAUSES, ACCIDENT_TYPES, ROLES } from "@/utils/constants";
-import { formatDateTime, labelFor } from "@/utils/formatters";
+import { ROLES } from "@/utils/constants";
+import { formatDateTime, translateValue } from "@/utils/formatters";
 import { canDeleteAccident, canEditAccident } from "@/utils/permissions";
 
 const iconButton = "rounded-lg p-2 transition-colors hover:bg-line";
@@ -13,6 +14,7 @@ const placeOf = (a) => a.location?.name || a.roadName || "-";
 // Phones: a list of cards. Tablets and desktop: a table.
 export default function AccidentTable({ accidents, user, onDelete }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const showActions = user?.role !== ROLES.VIEWER;
 
   const open = (a) => navigate(`/accidents/${a._id}`);
@@ -60,11 +62,12 @@ export default function AccidentTable({ accidents, user, onDelete }) {
             </div>
             <p className="mt-1 font-semibold text-fg">{placeOf(a)}</p>
             <p className="text-sm text-muted">
-              {a.district} · {labelFor(ACCIDENT_TYPES, a.type)} · {labelFor(ACCIDENT_CAUSES, a.cause)}
+              {a.district} · {translateValue(t, "accidentTypes", a.type)} ·{" "}
+              {translateValue(t, "accidentCauses", a.cause)}
             </p>
             <div className="mt-3 flex items-center justify-between">
               <p className="text-sm text-fg">
-                Injured <b>{a.injured}</b> · Deaths <b>{a.deaths}</b>
+                {t("table.injured")} <b>{a.injured}</b> · {t("table.deaths")} <b>{a.deaths}</b>
               </p>
               {showActions && actions(a)}
             </div>
@@ -76,14 +79,14 @@ export default function AccidentTable({ accidents, user, onDelete }) {
       <Table className="hidden md:block">
         <thead className="border-b border-line">
           <tr>
-            <th className={thClass}>Date &amp; Time</th>
-            <th className={thClass}>Location</th>
-            <th className={thClass}>District</th>
-            <th className={thClass}>Type</th>
-            <th className={`${thClass} hidden xl:table-cell`}>Cause</th>
-            <th className={thClass}>Injured</th>
-            <th className={thClass}>Deaths</th>
-            <th className={thClass}>Severity</th>
+            <th className={thClass}>{t("table.dateTime")}</th>
+            <th className={thClass}>{t("table.location")}</th>
+            <th className={thClass}>{t("table.district")}</th>
+            <th className={thClass}>{t("table.type")}</th>
+            <th className={`${thClass} hidden xl:table-cell`}>{t("table.cause")}</th>
+            <th className={thClass}>{t("table.injured")}</th>
+            <th className={thClass}>{t("table.deaths")}</th>
+            <th className={thClass}>{t("table.severity")}</th>
             {showActions && <th className={thClass} />}
           </tr>
         </thead>
@@ -99,8 +102,10 @@ export default function AccidentTable({ accidents, user, onDelete }) {
               <td className={`${tdClass} whitespace-nowrap text-fg`}>{formatDateTime(a.date)}</td>
               <td className={`${tdClass} text-fg`}>{placeOf(a)}</td>
               <td className={`${tdClass} text-muted`}>{a.district}</td>
-              <td className={`${tdClass} text-muted`}>{labelFor(ACCIDENT_TYPES, a.type)}</td>
-              <td className={`${tdClass} hidden text-muted xl:table-cell`}>{labelFor(ACCIDENT_CAUSES, a.cause)}</td>
+              <td className={`${tdClass} text-muted`}>{translateValue(t, "accidentTypes", a.type)}</td>
+              <td className={`${tdClass} hidden text-muted xl:table-cell`}>
+                {translateValue(t, "accidentCauses", a.cause)}
+              </td>
               <td className={`${tdClass} text-fg`}>{a.injured}</td>
               <td className={`${tdClass} text-fg`}>{a.deaths}</td>
               <td className={tdClass}>

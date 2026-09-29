@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 import logo from "@/assets/logo.svg";
@@ -8,10 +9,12 @@ import { useAuth } from "@/hooks/useAuth";
 import Alert from "@/components/common/Alert";
 import Button from "@/components/common/Button";
 import FormField, { inputBase } from "@/components/common/FormField";
+import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/common/ThemeToggle";
 
 export default function LoginPage() {
   const { user, loading, login } = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
 
   const [form, setForm] = useState({ email: "", password: "" });
@@ -43,19 +46,22 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-app p-4">
-      <ThemeToggle className="absolute end-4 top-4" />
+      <div className="absolute end-4 top-4 flex items-center gap-2">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
 
       <div className="w-full max-w-md rounded-2xl border border-line bg-card p-6 shadow-xl sm:p-8 dark:shadow-2xl">
         <div className="mb-8 text-center">
           <img src={logo} alt="" className="mx-auto mb-4 h-14 w-14 rounded-xl" />
-          <h1 className="text-xl font-bold text-fg">Road Accident Management</h1>
-          <p className="mt-1 text-sm text-muted">Kabul, Afghanistan</p>
+          <h1 className="text-xl font-bold text-fg">{t("app.title")}</h1>
+          <p className="mt-1 text-sm text-muted">{t("app.subtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && <Alert>{error}</Alert>}
 
-          <FormField label="Email" htmlFor="email">
+          <FormField label={t("login.email")} htmlFor="email">
             <div className="relative">
               <Mail size={18} className="absolute start-3 top-1/2 -translate-y-1/2 text-subtle" />
               <input
@@ -72,7 +78,7 @@ export default function LoginPage() {
             </div>
           </FormField>
 
-          <FormField label="Password" htmlFor="password">
+          <FormField label={t("login.password")} htmlFor="password">
             <div className="relative">
               <Lock size={18} className="absolute start-3 top-1/2 -translate-y-1/2 text-subtle" />
               <input
@@ -98,13 +104,11 @@ export default function LoginPage() {
           </FormField>
 
           <Button type="submit" size="lg" loading={submitting} className="w-full">
-            Sign in
+            {t("login.signIn")}
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-subtle">
-          Accounts are created by the administrator.
-        </p>
+        <p className="mt-6 text-center text-xs text-subtle">{t("login.accountsNote")}</p>
       </div>
     </div>
   );

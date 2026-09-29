@@ -1,1 +1,102 @@
-{}
+{
+  "app": { "title": "مدیریت حوادث ترافیکی", "subtitle": "کابل، افغانستان" },
+  "nav": {
+    "dashboard": "داشبورد",
+    "accidents": "حوادث",
+    "locations": "موقعیت‌ها",
+    "map": "نقشه",
+    "reports": "گزارش‌ها",
+    "users": "کاربران",
+    "logout": "خروج"
+  },
+  "common": {
+    "save": "ذخیره",
+    "cancel": "انصراف",
+    "edit": "ویرایش",
+    "delete": "حذف",
+    "add": "افزودن",
+    "search": "جستجو",
+    "loading": "در حال بارگذاری...",
+    "tryAgain": "دوباره تلاش کنید",
+    "all": "همه",
+    "notAllowed": "اجازه دسترسی ندارید",
+    "backToDashboard": "بازگشت به داشبورد"
+  },
+  "login": {
+    "email": "ایمیل",
+    "password": "رمز عبور",
+    "signIn": "ورود",
+    "accountsNote": "حساب‌های کاربری توسط مدیر سیستم ایجاد می‌شوند."
+  },
+  "changePassword": {
+    "title": "تغییر رمز عبور",
+    "forced": "به دلایل امنیتی، باید قبل از ادامه یک رمز عبور جدید تنظیم کنید.",
+    "normal": "یک رمز عبور جدید برای حساب خود انتخاب کنید.",
+    "current": "رمز عبور فعلی",
+    "new": "رمز عبور جدید",
+    "confirm": "تکرار رمز عبور جدید",
+    "hint": "حداقل ۸ کاراکتر",
+    "save": "ذخیره رمز جدید",
+    "logout": "خروج از حساب"
+  },
+  "dashboard": {
+    "title": "داشبورد",
+    "subtitle": "نمای کلی حوادث ترافیکی در کابل",
+    "lastUpdated": "آخرین به‌روزرسانی",
+    "totalAccidents": "مجموع حوادث",
+    "injured": "افراد زخمی",
+    "fatalities": "تلفات",
+    "locations": "موقعیت‌ها",
+    "vsLastMonth": "نسبت به ماه گذشته",
+    "noComparison": "هنوز مقایسه‌ای وجود ندارد",
+    "accidentsPerMonth": "حوادث در هر ماه",
+    "recentAccidents": "حوادث اخیر",
+    "viewAll": "مشاهده همه",
+    "noAccidents": "هنوز حادثه‌ای ثبت نشده است.",
+    "quickActions": "اقدامات سریع",
+    "addNewAccident": "افزودن حادثه جدید",
+    "viewAllAccidents": "مشاهده همه حوادث",
+    "manageLocations": "مدیریت موقعیت‌ها",
+    "viewLocations": "مشاهده موقعیت‌ها",
+    "generateReport": "تهیه گزارش",
+    "kabul": "کابل",
+    "kabulTagline": "جاده‌های امن‌تر، جوامع قوی‌تر"
+  },
+  "table": {
+    "dateTime": "تاریخ و زمان",
+    "location": "موقعیت",
+    "district": "ناحیه",
+    "type": "نوع",
+    "cause": "علت",
+    "injured": "زخمی",
+    "deaths": "تلفات",
+    "fatalities": "تلفات",
+    "severity": "شدت"
+  },
+  "roles": { "admin": "مدیر", "officer": "افسر ترافیک", "viewer": "بیننده" },
+  "severity": { "low": "کم", "medium": "متوسط", "high": "زیاد" },
+  "accidentTypes": {
+    "collision": "برخورد",
+    "pedestrian": "برخورد با پیاده",
+    "rollover": "واژگونی",
+    "hit_and_run": "فرار از صحنه",
+    "other": "سایر"
+  },
+  "accidentCauses": {
+    "speeding": "سرعت زیاد",
+    "wrong_way": "حرکت خلاف مسیر",
+    "mechanical": "نقص فنی",
+    "distracted": "بی‌توجهی راننده",
+    "other": "سایر"
+  },
+  "vehicleTypes": {
+    "car": "موتر",
+    "motorcycle": "موترسایکل",
+    "rickshaw": "ریکشا",
+    "bus": "بس",
+    "truck": "موتر باربری",
+    "van": "ون",
+    "bicycle": "بایسکل",
+    "other": "سایر"
+  }
+}

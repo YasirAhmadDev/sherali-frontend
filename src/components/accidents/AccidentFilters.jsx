@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Filter, RotateCcw, Search } from "lucide-react";
 
 import Button from "@/components/common/Button";
 import { inputBase, inputClass } from "@/components/common/FormField";
-import { ACCIDENT_CAUSES, ACCIDENT_TYPES, DISTRICT_OPTIONS, SEVERITIES } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import {
+  ACCIDENT_CAUSE_VALUES,
+  ACCIDENT_TYPE_VALUES,
+  DISTRICT_OPTIONS,
+  SEVERITY_VALUES,
+} from "@/utils/constants";
 
 export const EMPTY_FILTERS = {
   search: "",
@@ -34,6 +41,11 @@ function SelectFilter({ label, name, value, onChange, options, allLabel }) {
 }
 
 export default function AccidentFilters({ filters, onChange }) {
+  const { t } = useTranslation();
+  const accidentTypes = useOptions(ACCIDENT_TYPE_VALUES, "accidentTypes");
+  const accidentCauses = useOptions(ACCIDENT_CAUSE_VALUES, "accidentCauses");
+  const severities = useOptions(SEVERITY_VALUES, "severity");
+
   const [open, setOpen] = useState(false); // filters panel on phones
   const hasActive = Object.values(filters).some(Boolean);
 
@@ -59,23 +71,69 @@ export default function AccidentFilters({ filters, onChange }) {
         </Button>
       </div>
 
-      <div className={`${open ? "grid" : "hidden"} grid-cols-1 gap-3 sm:grid-cols-2 md:grid lg:grid-cols-3 xl:grid-cols-6`}>
+      <div
+        className={`${open ? "grid" : "hidden"} grid-cols-1 gap-3 sm:grid-cols-2 md:grid lg:grid-cols-3 xl:grid-cols-6`}
+      >
         <div>
           <label htmlFor="filter-from" className="mb-1 block text-xs font-medium text-muted">
             From
           </label>
-          <input id="filter-from" type="date" name="from" value={filters.from} max={filters.to || undefined} onChange={handleChange} className={inputClass} />
+          <input
+            id="filter-from"
+            type="date"
+            name="from"
+            value={filters.from}
+            max={filters.to || undefined}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
         <div>
           <label htmlFor="filter-to" className="mb-1 block text-xs font-medium text-muted">
             To
           </label>
-          <input id="filter-to" type="date" name="to" value={filters.to} min={filters.from || undefined} onChange={handleChange} className={inputClass} />
+          <input
+            id="filter-to"
+            type="date"
+            name="to"
+            value={filters.to}
+            min={filters.from || undefined}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
-        <SelectFilter label="District" name="district" value={filters.district} onChange={handleChange} options={DISTRICT_OPTIONS} allLabel="All districts" />
-        <SelectFilter label="Type" name="type" value={filters.type} onChange={handleChange} options={ACCIDENT_TYPES} allLabel="All types" />
-        <SelectFilter label="Cause" name="cause" value={filters.cause} onChange={handleChange} options={ACCIDENT_CAUSES} allLabel="All causes" />
-        <SelectFilter label="Severity" name="severity" value={filters.severity} onChange={handleChange} options={SEVERITIES} allLabel="All severities" />
+        <SelectFilter
+          label="District"
+          name="district"
+          value={filters.district}
+          onChange={handleChange}
+          options={DISTRICT_OPTIONS}
+          allLabel={t("common.all")}
+        />
+        <SelectFilter
+          label="Type"
+          name="type"
+          value={filters.type}
+          onChange={handleChange}
+          options={accidentTypes}
+          allLabel={t("common.all")}
+        />
+        <SelectFilter
+          label="Cause"
+          name="cause"
+          value={filters.cause}
+          onChange={handleChange}
+          options={accidentCauses}
+          allLabel={t("common.all")}
+        />
+        <SelectFilter
+          label="Severity"
+          name="severity"
+          value={filters.severity}
+          onChange={handleChange}
+          options={severities}
+          allLabel={t("common.all")}
+        />
       </div>
 
       {hasActive && (

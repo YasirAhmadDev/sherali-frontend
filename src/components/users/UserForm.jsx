@@ -1,17 +1,21 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getErrorMessage } from "@/api/axios";
 import Alert from "@/components/common/Alert";
 import Button from "@/components/common/Button";
 import FormField, { inputClass } from "@/components/common/FormField";
 import TempPasswordField from "@/components/users/TempPasswordField";
-import { DISTRICT_OPTIONS, ROLE_OPTIONS } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import { DISTRICT_OPTIONS, ROLE_VALUES } from "@/utils/constants";
 
 // Props:
 //   user      -> pass it to EDIT, leave empty to CREATE
 //   isSelf    -> true when the admin edits their own account (role cannot be changed)
 //   onSubmit(payload) -> promise
 export default function UserForm({ user, isSelf = false, onSubmit, onCancel }) {
+  const { t } = useTranslation();
+  const roleOptions = useOptions(ROLE_VALUES, "roles");
   const isEdit = Boolean(user);
 
   const [form, setForm] = useState({
@@ -86,7 +90,13 @@ export default function UserForm({ user, isSelf = false, onSubmit, onCancel }) {
         <input id="name" name="name" value={form.name} onChange={handleChange} maxLength={80} className={inputClass} />
       </FormField>
 
-      <FormField label="Email" htmlFor="email" required={!isEdit} error={errors.email} hint={isEdit ? "The email cannot be changed" : undefined}>
+      <FormField
+        label={t("login.email")}
+        htmlFor="email"
+        required={!isEdit}
+        error={errors.email}
+        hint={isEdit ? "The email cannot be changed" : undefined}
+      >
         <input
           id="email"
           name="email"
@@ -111,7 +121,7 @@ export default function UserForm({ user, isSelf = false, onSubmit, onCancel }) {
           hint={isSelf ? "You cannot change your own role" : "Officers add records. Viewers only see statistics."}
         >
           <select id="role" name="role" value={form.role} onChange={handleChange} disabled={isSelf} className={inputClass}>
-            {ROLE_OPTIONS.map((r) => (
+            {roleOptions.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
               </option>
@@ -119,7 +129,7 @@ export default function UserForm({ user, isSelf = false, onSubmit, onCancel }) {
           </select>
         </FormField>
 
-        <FormField label="District" htmlFor="district">
+        <FormField label={t("table.district")} htmlFor="district">
           <select id="district" name="district" value={form.district} onChange={handleChange} className={inputClass}>
             <option value="">No district</option>
             {DISTRICT_OPTIONS.map((d) => (
@@ -145,10 +155,10 @@ export default function UserForm({ user, isSelf = false, onSubmit, onCancel }) {
 
       <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
         <Button variant="secondary" onClick={onCancel} disabled={saving}>
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button type="submit" loading={saving}>
-          {isEdit ? "Save changes" : "Create user"}
+          {isEdit ? t("common.save") : "Create user"}
         </Button>
       </div>
     </form>

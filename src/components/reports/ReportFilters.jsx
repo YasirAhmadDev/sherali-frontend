@@ -1,8 +1,15 @@
+import { useTranslation } from "react-i18next";
 import { RotateCcw } from "lucide-react";
 
 import Button from "@/components/common/Button";
 import { inputClass } from "@/components/common/FormField";
-import { ACCIDENT_CAUSES, ACCIDENT_TYPES, DISTRICT_OPTIONS, SEVERITIES } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import {
+  ACCIDENT_CAUSE_VALUES,
+  ACCIDENT_TYPE_VALUES,
+  DISTRICT_OPTIONS,
+  SEVERITY_VALUES,
+} from "@/utils/constants";
 import { formatDate, getKabulMonth, getKabulYear } from "@/utils/formatters";
 
 export const EMPTY_REPORT_FILTERS = { from: "", to: "", district: "", type: "", cause: "", severity: "" };
@@ -45,6 +52,11 @@ function SelectFilter({ label, name, value, onChange, options, allLabel }) {
 }
 
 export default function ReportFilters({ filters, onChange }) {
+  const { t } = useTranslation();
+  const accidentTypes = useOptions(ACCIDENT_TYPE_VALUES, "accidentTypes");
+  const accidentCauses = useOptions(ACCIDENT_CAUSE_VALUES, "accidentCauses");
+  const severities = useOptions(SEVERITY_VALUES, "severity");
+
   const hasActive = Object.values(filters).some(Boolean);
   const handleChange = (e) => onChange({ ...filters, [e.target.name]: e.target.value });
 
@@ -53,7 +65,12 @@ export default function ReportFilters({ filters, onChange }) {
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-medium text-muted">Quick range:</span>
         {PRESETS.map((preset) => (
-          <Button key={preset.label} variant="secondary" size="sm" onClick={() => onChange({ ...filters, ...preset.range() })}>
+          <Button
+            key={preset.label}
+            variant="secondary"
+            size="sm"
+            onClick={() => onChange({ ...filters, ...preset.range() })}
+          >
             {preset.label}
           </Button>
         ))}
@@ -69,18 +86,62 @@ export default function ReportFilters({ filters, onChange }) {
           <label htmlFor="report-from" className="mb-1 block text-xs font-medium text-muted">
             From
           </label>
-          <input id="report-from" type="date" name="from" value={filters.from} max={filters.to || undefined} onChange={handleChange} className={inputClass} />
+          <input
+            id="report-from"
+            type="date"
+            name="from"
+            value={filters.from}
+            max={filters.to || undefined}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
         <div>
           <label htmlFor="report-to" className="mb-1 block text-xs font-medium text-muted">
             To
           </label>
-          <input id="report-to" type="date" name="to" value={filters.to} min={filters.from || undefined} onChange={handleChange} className={inputClass} />
+          <input
+            id="report-to"
+            type="date"
+            name="to"
+            value={filters.to}
+            min={filters.from || undefined}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
-        <SelectFilter label="District" name="district" value={filters.district} onChange={handleChange} options={DISTRICT_OPTIONS} allLabel="All districts" />
-        <SelectFilter label="Type" name="type" value={filters.type} onChange={handleChange} options={ACCIDENT_TYPES} allLabel="All types" />
-        <SelectFilter label="Cause" name="cause" value={filters.cause} onChange={handleChange} options={ACCIDENT_CAUSES} allLabel="All causes" />
-        <SelectFilter label="Severity" name="severity" value={filters.severity} onChange={handleChange} options={SEVERITIES} allLabel="All severities" />
+        <SelectFilter
+          label={t("table.district")}
+          name="district"
+          value={filters.district}
+          onChange={handleChange}
+          options={DISTRICT_OPTIONS}
+          allLabel={t("common.all")}
+        />
+        <SelectFilter
+          label={t("table.type")}
+          name="type"
+          value={filters.type}
+          onChange={handleChange}
+          options={accidentTypes}
+          allLabel={t("common.all")}
+        />
+        <SelectFilter
+          label={t("table.cause")}
+          name="cause"
+          value={filters.cause}
+          onChange={handleChange}
+          options={accidentCauses}
+          allLabel={t("common.all")}
+        />
+        <SelectFilter
+          label={t("table.severity")}
+          name="severity"
+          value={filters.severity}
+          onChange={handleChange}
+          options={severities}
+          allLabel={t("common.all")}
+        />
       </div>
     </div>
   );

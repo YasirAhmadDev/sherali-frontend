@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Car, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -24,6 +25,7 @@ import RoleGate from "@/components/common/RoleGate";
 
 export default function AccidentsPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState(EMPTY_FILTERS);
@@ -66,14 +68,14 @@ export default function AccidentsPage() {
   const addButton = (
     <RoleGate roles={STAFF_ROLES}>
       <Button icon={Plus} onClick={() => navigate("/accidents/new")}>
-        Add New Accident
+        {t("dashboard.addNewAccident")}
       </Button>
     </RoleGate>
   );
 
   return (
     <>
-      <PageHeader title="Accidents" subtitle="Search, filter and manage accident records" action={addButton} />
+      <PageHeader title={t("nav.accidents")} subtitle="Search, filter and manage accident records" action={addButton} />
 
       <Card className="mb-4">
         <AccidentFilters filters={filters} onChange={handleFiltersChange} />
@@ -118,7 +120,7 @@ export default function AccidentsPage() {
         danger
         title="Delete accident?"
         message="This record will be removed from the lists and statistics. Only an administrator can do this."
-        confirmLabel="Delete"
+        confirmLabel={t("common.delete")}
         loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setToDelete(null)}

@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Bell, ChevronDown, LogOut, Menu, User } from "lucide-react";
 
 import logo from "@/assets/logo.svg";
 import { useAuth } from "@/hooks/useAuth";
 import Badge from "@/components/common/Badge";
+import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/common/ThemeToggle";
 
 export default function Header({ onMenuClick }) {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -40,13 +43,14 @@ export default function Header({ onMenuClick }) {
         </button>
         <img src={logo} alt="" className="h-9 w-9 shrink-0 rounded-lg sm:h-10 sm:w-10" />
         <div className="hidden min-w-0 leading-tight sm:block">
-          <p className="truncate font-semibold text-fg">Road Accident Management</p>
-          <p className="text-xs text-muted">Kabul, Afghanistan</p>
+          <p className="truncate font-semibold text-fg">{t("app.title")}</p>
+          <p className="text-xs text-muted">{t("app.subtitle")}</p>
         </div>
       </div>
 
-      {/* Right: theme + notifications + user menu */}
+      {/* Right: language + theme + notifications + user menu */}
       <div className="flex items-center gap-1 sm:gap-2">
+        <LanguageSwitcher className="hidden sm:block" />
         <ThemeToggle />
 
         <button className="relative rounded-lg p-2 text-muted hover:bg-line" aria-label="Notifications">
@@ -77,12 +81,17 @@ export default function Header({ onMenuClick }) {
                   {user?.role}
                 </Badge>
               </div>
+
+              <div className="mt-2 sm:hidden">
+                <LanguageSwitcher className="w-full [&_select]:w-full" />
+              </div>
+
               <button
                 onClick={handleLogout}
                 className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted hover:bg-line hover:text-fg"
               >
                 <LogOut size={16} />
-                Logout
+                {t("nav.logout")}
               </button>
             </div>
           )}

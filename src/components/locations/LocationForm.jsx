@@ -13,8 +13,8 @@ export default function LocationForm({ location, onSubmit, onCancel }) {
   const [form, setForm] = useState({
     name: location?.name ?? "",
     district: location?.district ?? "",
-    lat: location ? String(location.lat) : "",
-    lng: location ? String(location.lng) : "",
+    lat: location?.lat != null ? String(location.lat) : "",
+    lng: location?.lng != null ? String(location.lng) : "",
   });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
@@ -32,13 +32,20 @@ export default function LocationForm({ location, onSubmit, onCancel }) {
     if (form.name.trim().length < 2) e.name = "Enter the location name";
     if (!form.district) e.district = "Select a district";
 
-    const lat = Number(form.lat);
-    const lng = Number(form.lng);
-    if (form.lat === "" || Number.isNaN(lat) || lat < minLat || lat > maxLat) {
-      e.lat = `Latitude must be between ${minLat} and ${maxLat}`;
-    }
-    if (form.lng === "" || Number.isNaN(lng) || lng < minLng || lng > maxLng) {
-      e.lng = `Longitude must be between ${minLng} and ${maxLng}`;
+    // Coordinates are optional, but if either is given, both must be valid
+    const hasLat = form.lat !== "";
+    const hasLng = form.lng !== "";
+    if (hasLat !== hasLng) {
+      e.lng = "Enter both latitude and longitude, or leave both empty";
+    } else if (hasLat) {
+      const lat = Number(form.lat);
+      const lng = Number(form.lng);
+      if (Number.isNaN(lat) || lat < minLat || lat > maxLat) {
+        e.lat = `Latitude must be between ${minLat} and ${maxLat}`;
+      }
+      if (Number.isNaN(lng) || lng < minLng || lng > maxLng) {
+        e.lng = `Longitude must be between ${minLng} and ${maxLng}`;
+      }
     }
     return e;
   };
@@ -52,12 +59,12 @@ export default function LocationForm({ location, onSubmit, onCancel }) {
     setFormError("");
     setSaving(true);
     try {
-      await onSubmit({
-        name: form.name.trim(),
-        district: form.district,
-        lat: Number(form.lat),
-        lng: Number(form.lng),
-      });
+      const payload = { name: form.name.trim(), district: form.district };
+      if (form.lat !== "" && form.lng !== "") {
+        payload.lat = Number(form.lat);
+        payload.lng = Number(form.lng);
+      }
+      await onSubmit(payload);
     } catch (err) {
       setFormError(getErrorMessage(err));
       setSaving(false);
@@ -92,7 +99,7 @@ export default function LocationForm({ location, onSubmit, onCancel }) {
       </FormField>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <FormField label="Latitude" htmlFor="lat" required error={errors.lat}>
+        <FormField label="Latitude" htmlFor="lat" hint="Optional" error={errors.lat}>
           <input
             id="lat"
             name="lat"
@@ -106,7 +113,7 @@ export default function LocationForm({ location, onSubmit, onCancel }) {
           />
         </FormField>
 
-        <FormField label="Longitude" htmlFor="lng" required error={errors.lng}>
+        <FormField label="Longitude" htmlFor="lng" hint="Optional" error={errors.lng}>
           <input
             id="lng"
             name="lng"
@@ -121,7 +128,8 @@ export default function LocationForm({ location, onSubmit, onCancel }) {
         </FormField>
       </div>
       <p className="text-xs text-subtle">
-        Tip: in Google Maps, right-click the spot and click the numbers at the top of the menu to copy
+        Optional. Without coordinates, accidents at this location will not appear on the Map page.
+        In Google Maps, right-click a spot and click the numbers at the top of the menu to copy
         them (first number = latitude, second = longitude).
       </p>
 

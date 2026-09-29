@@ -1,8 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { MapPin } from "lucide-react";
 
 // Drawn with SVG so it works in both themes. To use a real photo later, replace the
 // <svg> with:  <img src={kabulPhoto} alt="" className="absolute inset-0 h-full w-full object-cover" />
 export default function CityBanner() {
+  const { t } = useTranslation();
+
   return (
     <div className="relative h-40 overflow-hidden rounded-xl border border-line bg-linear-to-b from-sky-200 via-amber-100 to-emerald-100 sm:h-44 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-950">
       <svg
@@ -37,9 +40,9 @@ export default function CityBanner() {
       <div className="relative flex h-full flex-col p-4">
         <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-white">
           <MapPin size={20} className="text-accent" />
-          Kabul
+          {t("dashboard.kabul")}
         </div>
-        <p className="text-xs text-slate-700 dark:text-slate-300">Safer Roads, Stronger Communities</p>
+        <p className="text-xs text-slate-700 dark:text-slate-300">{t("dashboard.kabulTagline")}</p>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -7,7 +8,8 @@ import { deleteAccident, getAccident } from "@/api/accidents.api";
 import { getErrorMessage } from "@/api/axios";
 import { useAuth } from "@/hooks/useAuth";
 import { useFetch } from "@/hooks/useFetch";
-import { ACCIDENT_CAUSES, ACCIDENT_TYPES, VEHICLE_TYPES } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import { ACCIDENT_CAUSE_VALUES, ACCIDENT_TYPE_VALUES, VEHICLE_TYPE_VALUES } from "@/utils/constants";
 import { formatDateTime, labelFor } from "@/utils/formatters";
 import { canDeleteAccident, canEditAccident } from "@/utils/permissions";
 
@@ -33,6 +35,10 @@ export default function AccidentDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
+  const accidentTypes = useOptions(ACCIDENT_TYPE_VALUES, "accidentTypes");
+  const accidentCauses = useOptions(ACCIDENT_CAUSE_VALUES, "accidentCauses");
+  const vehicleTypes = useOptions(VEHICLE_TYPE_VALUES, "vehicleTypes");
 
   const { data: accident, loading, error } = useFetch(() => getAccident(id), [id]);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -76,12 +82,12 @@ export default function AccidentDetailPage() {
     <div className="flex flex-wrap gap-2">
       {canEditAccident(user, accident) && (
         <Button variant="secondary" icon={Pencil} onClick={() => navigate(`/accidents/${id}/edit`)}>
-          Edit
+          {t("common.edit")}
         </Button>
       )}
       {canDeleteAccident(user) && (
         <Button variant="danger" icon={Trash2} onClick={() => setConfirmDelete(true)}>
-          Delete
+          {t("common.delete")}
         </Button>
       )}
     </div>
@@ -105,10 +111,10 @@ export default function AccidentDetailPage() {
         <div className="space-y-6 lg:col-span-2">
           <Card title="Accident information" action={<SeverityBadge severity={accident.severity} />}>
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Info label="Type">{labelFor(ACCIDENT_TYPES, accident.type)}</Info>
-              <Info label="Cause">{labelFor(ACCIDENT_CAUSES, accident.cause)}</Info>
-              <Info label="Injured">{accident.injured}</Info>
-              <Info label="Deaths">{accident.deaths}</Info>
+              <Info label={t("table.type")}>{labelFor(accidentTypes, accident.type)}</Info>
+              <Info label={t("table.cause")}>{labelFor(accidentCauses, accident.cause)}</Info>
+              <Info label={t("table.injured")}>{accident.injured}</Info>
+              <Info label={t("table.deaths")}>{accident.deaths}</Info>
             </dl>
           </Card>
 
@@ -120,7 +126,7 @@ export default function AccidentDetailPage() {
                 <ul className="divide-y divide-line">
                   {accident.vehicles.map((v, i) => (
                     <li key={i} className="flex items-center justify-between py-2.5 text-sm">
-                      <span className="text-fg">{labelFor(VEHICLE_TYPES, v.type)}</span>
+                      <span className="text-fg">{labelFor(vehicleTypes, v.type)}</span>
                       <span className="font-mono text-muted">{v.plate || "No plate"}</span>
                     </li>
                   ))}
@@ -148,18 +154,13 @@ export default function AccidentDetailPage() {
         <div className="space-y-6">
           <Card title="Place">
             <dl className="space-y-4">
-              <Info label="District">{accident.district}</Info>
-              <Info label="Location">{accident.location?.name}</Info>
+              <Info label={t("table.district")}>{accident.district}</Info>
+              <Info label={t("table.location")}>{accident.location?.name}</Info>
               <Info label="Road">{accident.roadName}</Info>
               <Info label="Coordinates">{hasCoords ? `${lat}, ${lng}` : null}</Info>
             </dl>
             {mapLink && (
-              <a
-                href={mapLink}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
-              >
+              <a href={mapLink} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline">
                 Open in map <ExternalLink size={14} />
               </a>
             )}
@@ -185,7 +186,7 @@ export default function AccidentDetailPage() {
         danger
         title="Delete accident?"
         message="This record will be removed from the lists and statistics."
-        confirmLabel="Delete"
+        confirmLabel={t("common.delete")}
         loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setConfirmDelete(false)}

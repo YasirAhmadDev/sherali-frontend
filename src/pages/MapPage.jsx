@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getMapPoints } from "@/api/stats.api";
 import { useFetch } from "@/hooks/useFetch";
@@ -11,12 +12,13 @@ import AccidentMap, { SEVERITY_COLORS } from "@/components/map/AccidentMap";
 import ReportFilters, { EMPTY_REPORT_FILTERS } from "@/components/reports/ReportFilters";
 
 const LEGEND = [
-  { key: "low", label: "Low" },
-  { key: "medium", label: "Medium" },
-  { key: "high", label: "High" },
+  { key: "low", labelKey: "low" },
+  { key: "medium", labelKey: "medium" },
+  { key: "high", labelKey: "high" },
 ];
 
 export default function MapPage() {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState(EMPTY_REPORT_FILTERS);
   const params = useMemo(() => cleanParams(filters), [filters]);
 
@@ -24,7 +26,7 @@ export default function MapPage() {
 
   return (
     <>
-      <PageHeader title="Accident Map" subtitle="Where accidents happen. Clusters of dots show dangerous spots." />
+      <PageHeader title={t("nav.map")} subtitle="Where accidents happen. Clusters of dots show dangerous spots." />
 
       <Card className="mb-4">
         <ReportFilters filters={filters} onChange={setFilters} />
@@ -37,10 +39,10 @@ export default function MapPage() {
           {points ? `${points.length} accident${points.length === 1 ? "" : "s"} on the map` : "Loading..."}
         </p>
         <div className="flex items-center gap-4">
-          {LEGEND.map(({ key, label }) => (
+          {LEGEND.map(({ key, labelKey }) => (
             <span key={key} className="flex items-center gap-1.5 text-muted">
               <span className="h-3 w-3 rounded-full" style={{ background: SEVERITY_COLORS[key] }} />
-              {label}
+              {t(`severity.${labelKey}`)}
             </span>
           ))}
         </div>

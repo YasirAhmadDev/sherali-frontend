@@ -1,1 +1,102 @@
-{}
+{
+  "app": { "title": "Road Accident Management", "subtitle": "Kabul, Afghanistan" },
+  "nav": {
+    "dashboard": "Dashboard",
+    "accidents": "Accidents",
+    "locations": "Locations",
+    "map": "Map",
+    "reports": "Reports",
+    "users": "Users",
+    "logout": "Logout"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading...",
+    "tryAgain": "Try again",
+    "all": "All",
+    "notAllowed": "Not allowed",
+    "backToDashboard": "Back to dashboard"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "accountsNote": "Accounts are created by the administrator."
+  },
+  "changePassword": {
+    "title": "Change password",
+    "forced": "For security, you must set a new password before you continue.",
+    "normal": "Choose a new password for your account.",
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Confirm new password",
+    "hint": "At least 8 characters",
+    "save": "Save new password",
+    "logout": "Log out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of road accidents in Kabul",
+    "lastUpdated": "Last updated",
+    "totalAccidents": "Total Accidents",
+    "injured": "Injured People",
+    "fatalities": "Fatalities",
+    "locations": "Locations",
+    "vsLastMonth": "vs. last month",
+    "noComparison": "No comparison yet",
+    "accidentsPerMonth": "Accidents Per Month",
+    "recentAccidents": "Recent Accidents",
+    "viewAll": "View All",
+    "noAccidents": "No accidents recorded yet.",
+    "quickActions": "Quick Actions",
+    "addNewAccident": "Add New Accident",
+    "viewAllAccidents": "View All Accidents",
+    "manageLocations": "Manage Locations",
+    "viewLocations": "View Locations",
+    "generateReport": "Generate Report",
+    "kabul": "Kabul",
+    "kabulTagline": "Safer Roads, Stronger Communities"
+  },
+  "table": {
+    "dateTime": "Date & Time",
+    "location": "Location",
+    "district": "District",
+    "type": "Type",
+    "cause": "Cause",
+    "injured": "Injured",
+    "deaths": "Deaths",
+    "fatalities": "Fatalities",
+    "severity": "Severity"
+  },
+  "roles": { "admin": "Admin", "officer": "Officer", "viewer": "Viewer" },
+  "severity": { "low": "Low", "medium": "Medium", "high": "High" },
+  "accidentTypes": {
+    "collision": "Collision",
+    "pedestrian": "Pedestrian",
+    "rollover": "Rollover",
+    "hit_and_run": "Hit & Run",
+    "other": "Other"
+  },
+  "accidentCauses": {
+    "speeding": "Speeding",
+    "wrong_way": "Wrong-way driving",
+    "mechanical": "Mechanical failure",
+    "distracted": "Distracted driving",
+    "other": "Other"
+  },
+  "vehicleTypes": {
+    "car": "Car",
+    "motorcycle": "Motorcycle",
+    "rickshaw": "Rickshaw",
+    "bus": "Bus",
+    "truck": "Truck",
+    "van": "Van",
+    "bicycle": "Bicycle",
+    "other": "Other"
+  }
+}

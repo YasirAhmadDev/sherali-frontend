@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { getErrorMessage } from "@/api/axios";
@@ -11,6 +12,7 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 
 export default function ChangePasswordPage() {
   const { user, changePassword, logout } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
@@ -46,17 +48,15 @@ export default function ChangePasswordPage() {
       <ThemeToggle className="absolute end-4 top-4" />
 
       <div className="w-full max-w-md rounded-2xl border border-line bg-card p-6 shadow-xl sm:p-8 dark:shadow-2xl">
-        <h1 className="text-xl font-bold text-fg">Change password</h1>
+        <h1 className="text-xl font-bold text-fg">{t("changePassword.title")}</h1>
         <p className="mb-6 mt-1 text-sm text-muted">
-          {user?.mustChangePassword
-            ? "For security, you must set a new password before you continue."
-            : "Choose a new password for your account."}
+          {user?.mustChangePassword ? t("changePassword.forced") : t("changePassword.normal")}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && <Alert>{error}</Alert>}
 
-          <FormField label="Current password" htmlFor="currentPassword" required>
+          <FormField label={t("changePassword.current")} htmlFor="currentPassword" required>
             <input
               id="currentPassword"
               name="currentPassword"
@@ -69,7 +69,12 @@ export default function ChangePasswordPage() {
             />
           </FormField>
 
-          <FormField label="New password" htmlFor="newPassword" hint="At least 8 characters" required>
+          <FormField
+            label={t("changePassword.new")}
+            htmlFor="newPassword"
+            hint={t("changePassword.hint")}
+            required
+          >
             <input
               id="newPassword"
               name="newPassword"
@@ -82,7 +87,7 @@ export default function ChangePasswordPage() {
             />
           </FormField>
 
-          <FormField label="Confirm new password" htmlFor="confirmPassword" required>
+          <FormField label={t("changePassword.confirm")} htmlFor="confirmPassword" required>
             <input
               id="confirmPassword"
               name="confirmPassword"
@@ -96,15 +101,12 @@ export default function ChangePasswordPage() {
           </FormField>
 
           <Button type="submit" size="lg" loading={submitting} className="w-full">
-            Save new password
+            {t("changePassword.save")}
           </Button>
         </form>
 
-        <button
-          onClick={logout}
-          className="mt-4 w-full text-center text-sm text-subtle hover:text-fg"
-        >
-          Log out
+        <button onClick={logout} className="mt-4 w-full text-center text-sm text-subtle hover:text-fg">
+          {t("changePassword.logout")}
         </button>
       </div>
     </div>

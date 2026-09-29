@@ -1,13 +1,18 @@
+import { useTranslation } from "react-i18next";
 import { Plus, Trash2 } from "lucide-react";
 
 import Button from "@/components/common/Button";
 import { inputClass } from "@/components/common/FormField";
-import { VEHICLE_TYPES } from "@/utils/constants";
+import { useOptions } from "@/hooks/useOptions";
+import { VEHICLE_TYPE_VALUES } from "@/utils/constants";
 
 const MAX_VEHICLES = 10;
 
 // vehicles = [{ type: "car", plate: "KBL 1234" }, ...]
 export default function VehicleFields({ vehicles, onChange }) {
+  const { t } = useTranslation();
+  const vehicleTypes = useOptions(VEHICLE_TYPE_VALUES, "vehicleTypes");
+
   const update = (index, field, value) =>
     onChange(vehicles.map((v, i) => (i === index ? { ...v, [field]: value } : v)));
 
@@ -32,9 +37,9 @@ export default function VehicleFields({ vehicles, onChange }) {
             className={inputClass}
             aria-label={`Vehicle ${index + 1} type`}
           >
-            {VEHICLE_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
+            {vehicleTypes.map((v) => (
+              <option key={v.value} value={v.value}>
+                {v.label}
               </option>
             ))}
           </select>
@@ -48,7 +53,12 @@ export default function VehicleFields({ vehicles, onChange }) {
             aria-label={`Vehicle ${index + 1} plate number`}
           />
 
-          <Button variant="ghost" onClick={() => remove(index)} aria-label="Remove vehicle" className="justify-self-end">
+          <Button
+            variant="ghost"
+            onClick={() => remove(index)}
+            aria-label="Remove vehicle"
+            className="justify-self-end"
+          >
             <Trash2 size={18} className="text-red-500" />
           </Button>
         </div>
